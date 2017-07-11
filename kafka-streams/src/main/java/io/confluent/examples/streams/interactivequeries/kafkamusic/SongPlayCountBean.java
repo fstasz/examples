@@ -23,17 +23,16 @@ public class SongPlayCountBean {
   private String artist;
   private String album;
   private String name;
-
-
-
   private String genre;
+  private String youtubeURI;
+  private String biography;
   private Long id;
   private Long plays;
 
   public SongPlayCountBean() {}
 
   public SongPlayCountBean(final Long id, final String artist, final String album, final String name, final String genre, final Long
-      plays) {
+      plays, final String youtubeURI, final String biography) {
 
     this.id = id;
     this.artist = artist;
@@ -41,6 +40,8 @@ public class SongPlayCountBean {
     this.name = name;
     this.genre = genre;
     this.plays = plays;
+    this.youtubeURI = youtubeURI;
+    this.biography = biography;
   }
 
   public Long getId() {
@@ -58,7 +59,21 @@ public class SongPlayCountBean {
   public void setGenre(String genre) {
     this.genre = genre;
   }
+  public String getBiography() {
+    return biography;
+  }
 
+  public String getYoutubeURI() {
+    return youtubeURI;
+  }
+
+  public void setYoutubeURI(String youtubeURI) {
+    this.youtubeURI = youtubeURI;
+  }
+
+  public void setBiography(String biography) {
+    this.biography = biography;
+  }
   public String getArtist() {
     return artist;
   }

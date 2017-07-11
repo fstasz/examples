@@ -32,8 +32,7 @@ public class SongBean {
   }
 
   public SongBean(final Long id, final String artist, final String album, final String name,
-      final String genre,
-      final String youtubeURI, final String biography) {
+      final String genre, final String youtubeURI, final String biography) {
     this.id = id;
     this.artist = artist;
     this.album = album;

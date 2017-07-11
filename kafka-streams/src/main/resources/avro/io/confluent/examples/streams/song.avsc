@@ -6,6 +6,8 @@
      {"name": "album",  "type": "string"},
      {"name": "artist", "type": "string"},
      {"name": "name",   "type": "string"},
-     {"name": "genre",  "type": "string"}
+     {"name": "genre",  "type": "string"},
+     {"name": "youtubeURI",  "type": "string"},
+     {"name": "biography",  "type": "string"}
  ]
 }

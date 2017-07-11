@@ -154,15 +154,15 @@ public class MusicPlaysRestService {
                 songPlayCount.getSongId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(SongBean.class);
-        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(),
-            songPlayCount.getPlays()));
+        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(), song.getGenre(),
+            songPlayCount.getPlays(), song.getYoutubeURI(), song.getBiography()));
       } else {
         // look in the local store
         final ReadOnlyKeyValueStore<Long, Song> songStore = streams.store(KafkaMusicExample.ALL_SONGS,
             QueryableStoreTypes.<Long, Song>keyValueStore());
         final Song song = songStore.get(songPlayCount.getSongId());
-        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(),
-            songPlayCount.getPlays()));
+        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(), song.getGenre(),
+            songPlayCount.getPlays(), song.getYoutubeURI(), song.getBiography()));
       }
 
 
@@ -181,7 +181,7 @@ public class MusicPlaysRestService {
       throw new NotFoundException(String.format("Song with id [%d] was not found", songId));
     }
 
-    return new SongBean(song.getId(), song.getArtist(), song.getAlbum(), song.getName(), song.getGenre());
+    return new SongBean(song.getId(), song.getArtist(), song.getAlbum(), song.getName(), song.getGenre(), song.getYoutubeURI(), song.getBiography());
   }
 
   /**
