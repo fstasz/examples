@@ -13,6 +13,8 @@
  */
 package io.confluent.examples.streams.interactivequeries.kafkamusic;
 
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KafkaStreams;
@@ -20,8 +22,10 @@ import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -42,6 +46,8 @@ import javax.ws.rs.core.MediaType;
 import io.confluent.examples.streams.avro.Song;
 import io.confluent.examples.streams.interactivequeries.HostStoreInfo;
 import io.confluent.examples.streams.interactivequeries.MetadataService;
+
+
 
 /**
  *  A simple REST proxy that runs embedded in the {@link KafkaMusicExample}. This is used to
@@ -110,7 +116,7 @@ public class MusicPlaysRestService {
 
   private boolean thisHost(final HostStoreInfo host) {
     return host.getHost().equals(hostInfo.host()) &&
-           host.getPort() == hostInfo.port();
+        host.getPort() == hostInfo.port();
   }
 
 
@@ -122,7 +128,7 @@ public class MusicPlaysRestService {
   }
 
   private List<SongPlayCountBean> topFiveSongs(final String key,
-                                               final String storeName) {
+      final String storeName) {
 
     final ReadOnlyKeyValueStore<String, KafkaMusicExample.TopFiveSongs> topFiveStore =
         streams.store(storeName, QueryableStoreTypes.<String, KafkaMusicExample.TopFiveSongs>keyValueStore());
@@ -143,20 +149,20 @@ public class MusicPlaysRestService {
       if (!thisHost(host)) {
         final SongBean song =
             client.target(String.format("http://%s:%d/kafka-music/song/%d",
-                                        host.getHost(),
-                                        host.getPort(),
-                                        songPlayCount.getSongId()))
+                host.getHost(),
+                host.getPort(),
+                songPlayCount.getSongId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(SongBean.class);
-        results.add(new SongPlayCountBean(song.getArtist(),song.getAlbum(), song.getName(),
-                                          songPlayCount.getPlays()));
+        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(),
+            songPlayCount.getPlays()));
       } else {
         // look in the local store
         final ReadOnlyKeyValueStore<Long, Song> songStore = streams.store(KafkaMusicExample.ALL_SONGS,
-                                                                          QueryableStoreTypes.<Long, Song>keyValueStore());
+            QueryableStoreTypes.<Long, Song>keyValueStore());
         final Song song = songStore.get(songPlayCount.getSongId());
-        results.add(new SongPlayCountBean(song.getArtist(),song.getAlbum(), song.getName(),
-                                          songPlayCount.getPlays()));
+        results.add(new SongPlayCountBean(song.getId(), song.getArtist(),song.getAlbum(), song.getName(),
+            songPlayCount.getPlays()));
       }
 
 
@@ -169,13 +175,13 @@ public class MusicPlaysRestService {
   @Produces(MediaType.APPLICATION_JSON)
   public SongBean song(@PathParam("id") Long songId) {
     final ReadOnlyKeyValueStore<Long, Song> songStore = streams.store(KafkaMusicExample.ALL_SONGS,
-                                                                      QueryableStoreTypes.<Long, Song>keyValueStore());
+        QueryableStoreTypes.<Long, Song>keyValueStore());
     final Song song = songStore.get(songId);
     if (song == null) {
       throw new NotFoundException(String.format("Song with id [%d] was not found", songId));
     }
 
-    return new SongBean(song.getArtist(), song.getAlbum(), song.getName());
+    return new SongBean(song.getId(), song.getArtist(), song.getAlbum(), song.getName(), song.getGenre());
   }
 
   /**
@@ -221,6 +227,12 @@ public class MusicPlaysRestService {
     ServletHolder holder = new ServletHolder(sc);
     context.addServlet(holder, "/*");
 
+    FilterHolder filterHolder = new FilterHolder(CrossOriginFilter.class);
+    filterHolder.setName("cross-origin");
+    filterHolder.setInitParameter("access.control.allow.origin", "*");
+    filterHolder.setInitParameter("access.control.allow.methods", "*");
+    context.addFilter(filterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+
     jettyServer.start();
   }
 
@@ -235,4 +247,3 @@ public class MusicPlaysRestService {
   }
 
 }
-

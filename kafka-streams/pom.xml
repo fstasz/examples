@@ -56,6 +56,11 @@
             <version>${confluent.version}</version>
         </dependency>
         <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-servlets</artifactId>
+                        <version>9.2.15.v20160210</version>
+                   </dependency>
+        <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <version>${confluent.version}</version>

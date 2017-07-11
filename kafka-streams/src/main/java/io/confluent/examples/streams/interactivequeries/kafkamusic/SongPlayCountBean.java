@@ -23,17 +23,40 @@ public class SongPlayCountBean {
   private String artist;
   private String album;
   private String name;
+
+
+
+  private String genre;
+  private Long id;
   private Long plays;
 
   public SongPlayCountBean() {}
 
-  public SongPlayCountBean(final String artist, final String album, final String name, final Long
+  public SongPlayCountBean(final Long id, final String artist, final String album, final String name, final String genre, final Long
       plays) {
 
+    this.id = id;
     this.artist = artist;
     this.album = album;
     this.name = name;
+    this.genre = genre;
     this.plays = plays;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getGenre() {
+    return genre;
+  }
+
+  public void setGenre(String genre) {
+    this.genre = genre;
   }
 
   public String getArtist() {
@@ -71,9 +94,11 @@ public class SongPlayCountBean {
   @Override
   public String toString() {
     return "SongPlayCountBean{" +
-           "artist='" + artist + '\'' +
+        "id='" + id + '\'' +
+           ", artist='" + artist + '\'' +
            ", album='" + album + '\'' +
            ", name='" + name + '\'' +
+           ", genre='" + genre + '\'' +
            ", plays=" + plays +
            '}';
   }
@@ -87,9 +112,11 @@ public class SongPlayCountBean {
       return false;
     }
     final SongPlayCountBean that = (SongPlayCountBean) o;
-    return Objects.equals(artist, that.artist) &&
+    return Objects.equals(id, that.id) &&
+           Objects.equals(artist, that.artist) &&
            Objects.equals(album, that.album) &&
            Objects.equals(name, that.name) &&
+           Objects.equals(genre, that.genre) &&
            Objects.equals(plays, that.plays);
   }
 

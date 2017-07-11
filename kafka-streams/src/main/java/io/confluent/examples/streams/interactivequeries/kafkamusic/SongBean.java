@@ -20,17 +20,51 @@ import java.util.Objects;
 
 public class SongBean {
 
+  private Long id;
   private String artist;
   private String album;
   private String name;
+  private String genre;
+  private String youtubeURI;
+  private String biography;
 
-  public SongBean() {}
+  public SongBean() {
+  }
 
-  public SongBean(final String artist, final String album, final String name) {
-
+  public SongBean(final Long id, final String artist, final String album, final String name,
+      final String genre,
+      final String youtubeURI, final String biography) {
+    this.id = id;
     this.artist = artist;
     this.album = album;
     this.name = name;
+    this.genre = genre;
+    this.youtubeURI = youtubeURI;
+    this.biography = biography;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getBiography() {
+    return biography;
+  }
+
+  public String getYoutubeURI() {
+    return youtubeURI;
+  }
+
+  public void setYoutubeURI(String youtubeURI) {
+    this.youtubeURI = youtubeURI;
+  }
+
+  public void setBiography(String biography) {
+    this.biography = biography;
   }
 
   public String getArtist() {
@@ -57,14 +91,24 @@ public class SongBean {
     this.name = name;
   }
 
+  public String getGenre() {
+    return genre;
+  }
+
+  public void setGenre(final String genre) {
+    this.genre = genre;
+  }
+
 
   @Override
   public String toString() {
     return "SongBean{" +
-           "artist='" + artist + '\'' +
-           ", album='" + album + '\'' +
-           ", name='" + name + '\'' +
-           '}';
+        "id='" + id + '\'' +
+        ", artist='" + artist + '\'' +
+        ", album='" + album + '\'' +
+        ", name='" + name + '\'' +
+        ", genre'" + genre + '\'' +
+        '}';
   }
 
   @Override
@@ -77,12 +121,14 @@ public class SongBean {
     }
     final SongBean that = (SongBean) o;
     return Objects.equals(artist, that.artist) &&
-           Objects.equals(album, that.album) &&
-           Objects.equals(name, that.name);
+        Objects.equals(album, that.album) &&
+        Objects.equals(genre, that.genre) &&
+        Objects.equals(id, that.id) &&
+        Objects.equals(name, that.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(artist, album, name);
+    return Objects.hash(artist, album, name, genre, id);
   }
 }
